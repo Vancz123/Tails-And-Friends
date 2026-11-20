@@ -28,7 +28,18 @@ class GameController extends Controller
         $direction = $filters['direction'] ?? ($sort === 'release_date' ? 'desc' : 'asc');
 
         $gameQuery = Game::query()
-            ->withCount('characters')
+            ->withCount([
+                'characters',
+                'characters as debut_characters_count' => function (Builder $query) {
+                    $query->whereRaw('characters.debut_game_id = games.id');
+                },
+                'characters as appearing_characters_count' => function (Builder $query) {
+                    $query->where(function (Builder $q) {
+                        $q->whereNull('characters.debut_game_id')
+                          ->orWhereRaw('characters.debut_game_id <> games.id');
+                    });
+                },
+            ])
             ->when($search !== '', fn (Builder $query) => $query
                 ->where(function (Builder $query) use ($search): void {
                     $query->where('name', 'like', "%{$search}%")

@@ -186,6 +186,15 @@ tfoot .table-create-cell { padding: 18px 25px; border-top: 1px solid #f2e5d9; ba
 .auth-switch { margin: 21px 0 0; color: #8992a2; font-size: 11px; text-align: center; }
 .auth-switch a { color: var(--orange-dark); font-weight: 750; }
 
+.settings-card .form-stack { gap: 14px; }
+.settings-divider { margin: 24px 0; border-top: 1px solid var(--line); }
+.delete-account-section { gap: 12px; }
+.delete-account-warning { display: flex; gap: 12px; padding: 14px 16px; border: 1px solid #f0d5b5; border-radius: 10px; background: #fffaf0; }
+.delete-account-warning .warning-icon { flex-shrink: 0; margin-top: 1px; font-size: 18px; color: #c4762c; line-height: 1; }
+.delete-account-warning h3 { margin: 0 0 4px; color: #8c4c23; font-size: 13px; font-weight: 750; }
+.delete-account-warning p { margin: 0; color: #8c4c23; font-size: 11px; line-height: 1.5; }
+
+.security-hero { background: radial-gradient(ellipse at 92% 10%, rgba(240,106,82,.2), transparent 31%), linear-gradient(120deg, #fff 5%, #fff4ed 100%); }
 .security-hero { background: radial-gradient(ellipse at 92% 10%, rgba(240,106,82,.2), transparent 31%), linear-gradient(120deg, #fff 5%, #fff4ed 100%); }
 .security-notice { margin-bottom: 20px; padding: 13px 15px; border: 1px solid #f2d5be; border-radius: 11px; color: #8c4c23; background: #fff6ed; font-size: 11px; line-height: 1.6; }
 .security-actions { padding: 20px 25px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid #f0f1f5; }
@@ -715,6 +724,18 @@ tbody tr:hover { background: #fff8f0; }
     background: linear-gradient(135deg, #fa795d, #b8202b);
     box-shadow: 0 9px 22px rgba(175, 32, 39, .3);
 }
+
+.button-danger {
+    color: #fff;
+    background: linear-gradient(135deg, #e55a5a, #c0392b 72%, #a91e2c);
+    box-shadow: 0 6px 16px rgba(192, 57, 43, .22);
+}
+.button-danger:hover {
+    color: #fff;
+    background: linear-gradient(135deg, #ef6b6b, #a93226);
+    box-shadow: 0 8px 20px rgba(192, 57, 43, .28);
+}
+
 .button-pulse { animation: simulation-pulse 1.8s ease-out infinite; }
 .simulation-caption {
     color: #7d5660;

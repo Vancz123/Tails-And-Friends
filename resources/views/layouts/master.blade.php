@@ -19,16 +19,12 @@
                 <a href="{{ route('games.index') }}" @class(['active' => request()->routeIs('games.*')])>Jogos</a>
                 @auth
                     <a href="{{ route('dashboard') }}" @class(['active' => request()->routeIs('dashboard')])>Dashboard</a>
-                    @if (auth()->user()->isAdministrator())
-                        <a href="{{ route('security.index') }}" @class(['active' => request()->routeIs('security.*')])>Segurança</a>
-                        <a href="{{ route('admin.users.index') }}" @class(['active' => request()->routeIs('admin.users.*')])>Utilizadores</a>
-                    @endif
                 @endauth
             </nav>
             <div class="header-account">
                 @auth
                     <span class="account-name">{{ auth()->user()->name }}</span>
-                    <a class="button button-quiet button-small" href="{{ route('user-password.edit') }}">Alterar palavra-passe</a>
+                    <a class="button button-quiet button-small" href="{{ route('settings.index') }}">Definições</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button class="button button-quiet button-small" type="submit">Terminar sessão</button>

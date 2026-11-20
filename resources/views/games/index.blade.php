@@ -9,6 +9,7 @@
             <h1>Jogos</h1>
             <p>Consulta os jogos da coleção, as datas de lançamento e as personagens que participam.</p>
         </div>
+        <img class="hero-art" src="{{ asset('images/tails-games.png') }}" alt="Tails em uma cena de aventura" fetchpriority="high">
     </section>
     @include('partials.flash')
 
@@ -47,7 +48,7 @@
         </form>
         <div class="table-scroll">
             <table>
-                <thead><tr><th>Jogo</th><th>Lançamento</th><th>Personagens</th><th class="align-right">Ações</th></tr></thead>
+                <thead><tr><th>Jogo</th><th>Lançamento</th><th>Personagens</th><th>Estreia</th><th>Aparecem</th><th class="align-right">Ações</th></tr></thead>
                 <tbody>
                     @forelse ($games as $game)
                         <tr>
@@ -65,6 +66,8 @@
                             </td>
                             <td><span class="date-label">{{ $game->release_date->format('d/m/Y') }}</span></td>
                             <td><span class="count-pill">{{ $game->characters_count }} {{ $game->characters_count === 1 ? 'personagem' : 'personagens' }}</span></td>
+                            <td><span class="count-pill">{{ $game->debut_characters_count }} {{ $game->debut_characters_count === 1 ? 'personagem' : 'personagens' }}</span></td>
+                            <td><span class="count-pill">{{ $game->appearing_characters_count }} {{ $game->appearing_characters_count === 1 ? 'personagem' : 'personagens' }}</span></td>
                             <td class="align-right">
                                 <div class="action-row">
                                     <a class="button button-outline button-small" href="{{ route('games.show', $game) }}">Ver jogo</a>
@@ -84,7 +87,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td class="empty-state" colspan="4">{{ $search !== '' || $year !== '' ? 'Nenhum jogo corresponde aos filtros.' : 'Ainda não existem jogos na coleção.' }}</td></tr>
+                        <tr><td class="empty-state" colspan="6">{{ $search !== '' || $year !== '' ? 'Nenhum jogo corresponde aos filtros.' : 'Ainda não existem jogos na coleção.' }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

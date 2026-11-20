@@ -39,7 +39,9 @@ Route::delete('/games/{game}', [GameController::class, 'destroy'])
 
 Route::get('/dashboard', DashboardController::class)->middleware('auth')->name('dashboard');
 Route::middleware('auth')->group(function () {
-    Route::view('/user/password', 'auth.update-password')->name('user-password.edit');
+    Route::view('/settings', 'auth.settings')->name('settings.index');
+    Route::delete('/settings/account', [UserManagementController::class, 'destroyAccount'])
+        ->name('account.destroy');
     Route::get('/security-demo', [SecuritySimulationController::class, 'index'])->name('security.index');
     Route::post('/security-demo/simulate', [SecuritySimulationController::class, 'simulate'])
         ->middleware('throttle:eggman-demo')
