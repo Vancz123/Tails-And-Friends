@@ -36,8 +36,6 @@ class UserManagementController extends Controller
 
     public function index(Request $request): View
     {
-        $this->requireAdministrator();
-
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
         ]);
@@ -58,7 +56,6 @@ class UserManagementController extends Controller
 
     public function updateRole(Request $request, User $user): RedirectResponse
     {
-        $this->requireAdministrator();
 
         $data = $request->validate([
             'role' => ['required', 'string', Rule::in(['user', 'admin'])],
@@ -89,11 +86,6 @@ class UserManagementController extends Controller
             $managedUser->forceFill(['role' => $data['role']])->save();
         });
 
-        return redirect()->route('admin.users.index')->with('status', 'Permissão do utilizador atualizada.');
-    }
-
-    private function requireAdministrator(): void
-    {
-        abort_unless(auth()->user()?->isAdministrator(), 403);
+return redirect()->route('admin.users.index')->with('status', 'Permissão do utilizador atualizada.');
     }
 }

@@ -80,17 +80,15 @@ class GameController extends Controller
         return view('games.show', compact('game', 'debutCharacters', 'appearingCharacters'));
     }
 
-    public function create()
+public function create()
     {
-        $this->requireAdministrator();
         $characters = Character::orderBy('name')->get();
 
         return view('games.form', ['game' => new Game, 'characters' => $characters]);
     }
 
-    public function store(Request $request)
+public function store(Request $request)
     {
-        $this->requireAdministrator();
         $data = $this->validatedData($request);
         $characterIds = $data['character_ids'] ?? [];
         $image = $data['image'] ?? null;
@@ -140,9 +138,8 @@ class GameController extends Controller
         return redirect()->route('games.index')->with('status', 'Jogo atualizado com sucesso.');
     }
 
-    public function destroy(Game $game)
+public function destroy(Game $game)
     {
-        $this->requireAdministrator();
         $imagePath = $game->image_path;
         $game->delete();
 
@@ -167,11 +164,6 @@ class GameController extends Controller
             'character_ids' => ['sometimes', 'array'],
             'character_ids.*' => ['integer', 'exists:characters,id'],
         ]);
-    }
-
-    private function requireAdministrator(): void
-    {
-        abort_unless(auth()->user()?->isAdministrator(), 403);
     }
 
     private function storeImage(UploadedFile $image): string

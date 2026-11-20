@@ -50,18 +50,15 @@ class CharacterController extends Controller
         return view('characters.index', compact('characters', 'search', 'sort', 'direction'));
     }
 
-    public function create()
+public function create()
     {
-        $this->requireAdministrator();
         $games = Game::orderBy('name')->get();
 
         return view('characters.form', ['character' => new Character, 'games' => $games]);
     }
 
-    public function store(Request $request)
+public function store(Request $request)
     {
-        $this->requireAdministrator();
-
         $data = $this->validatedData($request);
         $image = $data['image'] ?? null;
         unset($data['image']);
@@ -163,9 +160,8 @@ class CharacterController extends Controller
         return redirect()->route('characters.show', $character)->with('status', 'Personagem atualizado com sucesso.');
     }
 
-    public function destroy(Character $character)
+public function destroy(Character $character)
     {
-        $this->requireAdministrator();
         $imagePath = $character->image_path;
         $character->delete();
 
@@ -208,10 +204,5 @@ class CharacterController extends Controller
         if ($disk->exists($path) && !$disk->delete($path)) {
             throw new RuntimeException('Não foi possível remover a imagem antiga do personagem.');
         }
-    }
-
-    private function requireAdministrator(): void
-    {
-        abort_unless(auth()->user()?->isAdministrator(), 403);
     }
 }

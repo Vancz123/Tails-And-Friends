@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,6 +8,7 @@
     <title>@yield('title', 'Tails & Friends') · Tails & Friends</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body>
     <header class="site-header">
         <div class="header-inner">
@@ -15,19 +17,19 @@
                 <span>Tails <span class="brand-amp">&</span> Friends</span>
             </a>
             <nav class="main-nav" aria-label="Navegação principal">
-                <a href="{{ route('characters.index') }}" @class(['active' => request()->routeIs('characters.*')])>Personagens</a>
-                <a href="{{ route('games.index') }}" @class(['active' => request()->routeIs('games.*')])>Jogos</a>
+                <a href="{{ route('characters.index') }}" @class(['active' => request()->routeIs('characters.*')])>Personagens🦊</a>
+                <a href="{{ route('games.index') }}" @class(['active' => request()->routeIs('games.*')])>Jogos 😎</a>
                 @auth
-                    <a href="{{ route('dashboard') }}" @class(['active' => request()->routeIs('dashboard')])>Dashboard</a>
+                    <a href="{{ route('dashboard') }}" @class(['active' => request()->routeIs('dashboard')])>Dashboard 🔎</a>
                 @endauth
             </nav>
             <div class="header-account">
                 @auth
-                    <span class="account-name">{{ auth()->user()->name }}</span>
-                    <a class="button button-quiet button-small" href="{{ route('settings.index') }}">Definições</a>
+                    <span class="account-name">{{ auth()->user()->name }}🌐</span>
+                    <a class="button button-quiet button-small" href="{{ route('settings.index') }}">⚙️Definições</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button class="button button-quiet button-small" type="submit">Terminar sessão</button>
+                        <button class="button button-quiet button-small" type="submit"> 👋Terminar sessão</button>
                     </form>
                 @else
                     <a class="button button-quiet button-small" href="{{ route('login') }}">Entrar</a>
@@ -46,4 +48,5 @@
         <span>Uma base de dados de personagens e jogos do universo Sonic.</span>
     </footer>
 </body>
+
 </html>
