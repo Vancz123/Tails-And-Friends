@@ -32,10 +32,6 @@ UPDATE users SET role = 'admin' WHERE email = 'email-registado@example.com';
 
 Novos registos recebem sempre o perfil `user`; o formulário de registo não permite atribuir privilégios de administrador.
 
-## Demonstração defensiva
-
-Administradores têm acesso ao painel “Segurança”, que regista no banco e no log local eventos sintéticos e demonstra o rate limiting sem enviar pedidos externos nem tentar aceder a recursos reais. Cada execução produz cinco registos de exemplo; o simulador limita três execuções por minuto.
-
 ## Imagens
 
 As imagens carregadas pelos formulários são validadas (JPG, PNG ou WEBP, até 2 MB) e guardadas no disco `public` do Laravel, em `storage/app/public/characters` ou `storage/app/public/games`. Para as servir através de `public/storage`, execute uma vez:

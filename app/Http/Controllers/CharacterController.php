@@ -27,7 +27,7 @@ class CharacterController extends Controller
         $characterQuery = Character::query()
             ->select('characters.*')
             ->withCount('games')
-            ->when($search !== '', fn (Builder $query) => $query
+            ->when($search !== '', fn(Builder $query) => $query
                 ->where('characters.name', 'like', "%{$search}%")
                 ->orWhere('characters.description', 'like', "%{$search}%"));
 
@@ -45,7 +45,7 @@ class CharacterController extends Controller
             $characterQuery->orderBy('characters.name', $direction);
         }
 
-        $characters = $characterQuery->paginate(12)->withQueryString();
+        $characters = $characterQuery->paginate(15)->withQueryString();
 
         return view('characters.index', compact('characters', 'search', 'sort', 'direction'));
     }
@@ -88,31 +88,37 @@ class CharacterController extends Controller
         $userId = auth()->id();
         $character->load('debutGame');
         $character->loadCount([
-            'verifications as character_verifications_count' => fn (Builder $query) => $query
+            'verifications as character_verifications_count' => fn(Builder $query) => $query
                 ->whereNotNull('character_verified_at'),
-            'verifications as debut_game_verifications_count' => fn (Builder $query) => $query
+            'verifications as debut_game_verifications_count' => fn(Builder $query) => $query
                 ->whereNotNull('debut_game_verified_at')
                 ->whereNotNull('debut_game_id')
                 ->where('debut_game_id', $character->debut_game_id),
         ]);
         $character->loadExists([
-            'verifications as character_verified_by_user' => fn (Builder $query) => $query
+            'verifications as character_verified_by_user' => fn(Builder $query) => $query
                 ->where('user_id', $userId)
                 ->whereNotNull('character_verified_at'),
-            'verifications as debut_game_verified_by_user' => fn (Builder $query) => $query
+            'verifications as debut_game_verified_by_user' => fn(Builder $query) => $query
                 ->where('user_id', $userId)
                 ->whereNotNull('debut_game_verified_at')
                 ->whereNotNull('debut_game_id')
                 ->where('debut_game_id', $character->debut_game_id),
         ]);
-        $character->load(['games' => fn ($query) => $query
-            ->when($character->debut_game_id, fn ($query) => $query->where('games.id', '!=', $character->debut_game_id))
-            ->orderBy('name')
-            ->withCount(['appearanceVerifications as verification_count' => fn (Builder $query) => $query
-                ->where('character_id', $character->id)])
-            ->withExists(['appearanceVerifications as verified_by_user' => fn (Builder $query) => $query
-                ->where('character_id', $character->id)
-                ->where('user_id', $userId)])]);
+        $character->load([
+            'games' => fn($query) => $query
+                ->when($character->debut_game_id, fn($query) => $query->where('games.id', '!=', $character->debut_game_id))
+                ->orderBy('name')
+                ->withCount([
+                    'appearanceVerifications as verification_count' => fn(Builder $query) => $query
+                        ->where('character_id', $character->id)
+                ])
+                ->withExists([
+                    'appearanceVerifications as verified_by_user' => fn(Builder $query) => $query
+                        ->where('character_id', $character->id)
+                        ->where('user_id', $userId)
+                ])
+        ]);
 
         return view('characters.show', compact('character'));
     }
@@ -188,7 +194,7 @@ class CharacterController extends Controller
     {
         $path = $image->store('characters', 'public');
 
-        if (! $path) {
+        if (!$path) {
             throw new RuntimeException('Não foi possível guardar a imagem do personagem.');
         }
 
@@ -199,7 +205,7 @@ class CharacterController extends Controller
     {
         $disk = Storage::disk('public');
 
-        if ($disk->exists($path) && ! $disk->delete($path)) {
+        if ($disk->exists($path) && !$disk->delete($path)) {
             throw new RuntimeException('Não foi possível remover a imagem antiga do personagem.');
         }
     }

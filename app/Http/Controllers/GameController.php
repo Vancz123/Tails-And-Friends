@@ -36,18 +36,18 @@ class GameController extends Controller
                 'characters as appearing_characters_count' => function (Builder $query) {
                     $query->where(function (Builder $q) {
                         $q->whereNull('characters.debut_game_id')
-                          ->orWhereRaw('characters.debut_game_id <> games.id');
+                            ->orWhereRaw('characters.debut_game_id <> games.id');
                     });
                 },
             ])
-            ->when($search !== '', fn (Builder $query) => $query
+            ->when($search !== '', fn(Builder $query) => $query
                 ->where(function (Builder $query) use ($search): void {
                     $query->where('name', 'like', "%{$search}%")
                         ->orWhere('description', 'like', "%{$search}%")
-                        ->orWhereHas('characters', fn (Builder $characters) => $characters
+                        ->orWhereHas('characters', fn(Builder $characters) => $characters
                             ->where('name', 'like', "%{$search}%"));
                 }))
-            ->when($year !== '', fn (Builder $query) => $query->whereYear('release_date', $year));
+            ->when($year !== '', fn(Builder $query) => $query->whereYear('release_date', $year));
 
         if ($sort === 'created_at') {
             $gameQuery->orderBy('created_at', $direction)->orderBy('name');
@@ -57,7 +57,7 @@ class GameController extends Controller
             $gameQuery->orderBy('release_date', $direction)->orderBy('name');
         }
 
-        $games = $gameQuery->paginate(12)->withQueryString();
+        $games = $gameQuery->paginate(15)->withQueryString();
 
         return view('games.index', compact('games', 'search', 'year', 'sort', 'direction'));
     }
@@ -178,7 +178,7 @@ class GameController extends Controller
     {
         $path = $image->store('games', 'public');
 
-        if (! $path) {
+        if (!$path) {
             throw new RuntimeException('Não foi possível guardar a imagem do jogo.');
         }
 
@@ -189,7 +189,7 @@ class GameController extends Controller
     {
         $disk = Storage::disk('public');
 
-        if ($disk->exists($path) && ! $disk->delete($path)) {
+        if ($disk->exists($path) && !$disk->delete($path)) {
             throw new RuntimeException('Não foi possível remover a imagem antiga do jogo.');
         }
     }
