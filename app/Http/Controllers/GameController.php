@@ -85,14 +85,7 @@ class GameController extends Controller
 
     public function create()
     {
-<<<<<<< HEAD
-        if (! $this->canManageContent()) {
-            return view('games.check', ['game' => new Game]);
-        }
-
-=======
         $this->requireAdministrator();
->>>>>>> 51ef348453b200e99430a06005b28634517d253b
         $characters = Character::orderBy('name')->get();
 
         return view('games.form', ['game' => new Game, 'characters' => $characters]);

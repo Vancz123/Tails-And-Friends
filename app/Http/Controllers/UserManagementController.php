@@ -76,32 +76,6 @@ class UserManagementController extends Controller
 
     public function destroy(Request $request, User $user): RedirectResponse
     {
-<<<<<<< HEAD
-        if ($user->is($request->user())) {
-            throw ValidationException::withMessages([
-                'user' => 'Não podes apagar a tua própria conta aqui. Usa as definições da conta.',
-            ]);
-        }
-
-        DB::transaction(function () use ($user): void {
-            $managedUser = User::query()->lockForUpdate()->findOrFail($user->id);
-            $remainingAdministrators = User::query()
-                ->where('role', 'admin')
-                ->whereKeyNot($managedUser->id)
-                ->lockForUpdate()
-                ->count();
-
-            if ($managedUser->isAdministrator() && $remainingAdministrators === 0) {
-                throw ValidationException::withMessages([
-                    'user' => 'A aplicação precisa de pelo menos um administrador.',
-                ]);
-            }
-
-            $managedUser->delete();
-        });
-
-        return redirect()->route('admin.users.index')->with('status', 'Utilizador removido com sucesso.');
-=======
         $this->requireAdministrator();
 
         if ($user->is(auth()->user())) {
@@ -136,6 +110,5 @@ class UserManagementController extends Controller
     private function requireAdministrator(): void
     {
         abort_unless(auth()->user()?->isAdministrator(), 403);
->>>>>>> 51ef348453b200e99430a06005b28634517d253b
     }
 }
