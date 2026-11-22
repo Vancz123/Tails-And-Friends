@@ -8,10 +8,11 @@ use App\Http\Controllers\SecuritySimulationController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/characters');
+Route::redirect('/', '/characters')->name('welcome');
 Route::get('/characters', [CharacterController::class, 'index'])->name('characters.index');
 Route::get('/characters/create', [CharacterController::class, 'create'])
     ->middleware('auth')->name('characters.create');
+Route::get('/characters/{character}', [CharacterController::class, 'show'])->name('characters.show');
 Route::post('/characters', [CharacterController::class, 'store'])
     ->middleware('auth')->name('characters.store');
 Route::get('/characters/{character}/edit', [CharacterController::class, 'edit'])
@@ -20,7 +21,6 @@ Route::put('/characters/{character}', [CharacterController::class, 'update'])
     ->middleware('auth')->name('characters.update');
 Route::delete('/characters/{character}', [CharacterController::class, 'destroy'])
     ->middleware('auth')->name('characters.destroy');
-Route::get('/characters/{character}', [CharacterController::class, 'show'])->name('characters.show');
 Route::put('/characters/{character}/verifications', [CharacterVerificationController::class, 'update'])
     ->middleware('auth')->name('characters.verifications.update');
 
@@ -40,6 +40,7 @@ Route::delete('/games/{game}', [GameController::class, 'destroy'])
 Route::get('/dashboard', DashboardController::class)->middleware('auth')->name('dashboard');
 Route::middleware('auth')->group(function () {
     Route::view('/settings', 'auth.settings')->name('settings.index');
+    Route::view('/user/password', 'auth.update-password')->name('user-password.edit');
     Route::delete('/settings/account', [UserManagementController::class, 'destroyAccount'])
         ->name('account.destroy');
     Route::get('/security-demo', [SecuritySimulationController::class, 'index'])->name('security.index');
@@ -53,4 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/users', [UserManagementController::class, 'index'])->name('admin.users.index');
     Route::put('/admin/users/{user}/role', [UserManagementController::class, 'updateRole'])
         ->name('admin.users.update-role');
+    Route::delete('/admin/users/{user}', [UserManagementController::class, 'destroy'])
+        ->name('admin.users.destroy');
 });
