@@ -113,9 +113,7 @@ public function store(Request $request)
 
     public function edit(Game $game)
     {
-        if (! $this->canManageContent()) {
-            return view('games.check', ['game' => $this->withAppearanceState($game)]);
-        }
+        abort_unless(auth()->check(), 403);
 
         $characters = Character::orderBy('name')->get();
         $game->load('characters');
@@ -149,6 +147,8 @@ public function store(Request $request)
 
     public function update(Request $request, Game $game)
     {
+        abort_unless(auth()->check(), 403);
+
         $data = $this->validatedData($request, $game);
         $characterIds = $data['character_ids'] ?? [];
         $image = $data['image'] ?? null;
