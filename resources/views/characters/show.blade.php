@@ -26,11 +26,7 @@
             ])
         </div>
         @auth
-            @if (auth()->user()->isAdministrator())
-                <a class="button button-primary" href="{{ route('characters.edit', $character) }}">Editar personagem</a>
-            @else
-                <a class="button button-outline" href="{{ route('characters.edit', $character) }}">Confirmar personagem</a>
-            @endif
+            <a class="button button-primary" href="{{ route('characters.edit', $character) }}">Editar personagem</a>
         @endauth
     </section>
     @include('partials.flash')

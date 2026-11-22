@@ -139,23 +139,21 @@ public function store(Request $request)
         return $character;
     }
 
+    /** Qualquer utilizador autenticado pode editar; só administradores podem apagar. */
     public function edit(Character $character)
     {
+        abort_unless(auth()->check(), 403);
+
         $games = Game::orderBy('name')->get();
         $character->load('debutGame');
-
-        if (! $this->canManageContent()) {
-            return view('characters.check', [
-                'character' => $this->withVerificationState($character),
-                'games' => $games,
-            ]);
-        }
 
         return view('characters.form', compact('character', 'games'));
     }
 
     public function update(Request $request, Character $character)
     {
+        abort_unless(auth()->check(), 403);
+
         $data = $this->validatedData($request, $character);
         $image = $data['image'] ?? null;
         unset($data['image']);

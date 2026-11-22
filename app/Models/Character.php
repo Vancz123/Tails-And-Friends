@@ -15,7 +15,7 @@ class Character extends Model
 {
     protected function image(): Attribute
     {
-        return Attribute::get(fn (): ?string => $this->image_path
+        return Attribute::get(fn(): ?string => $this->image_path
             ? Storage::disk('public')->url($this->image_path)
             : $this->image_url);
     }

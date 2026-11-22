@@ -19,11 +19,7 @@
             <span class="date-label">Lançado em {{ $game->release_date->format('d/m/Y') }}</span>
         </div>
         @auth
-            @if (auth()->user()->isAdministrator())
-                <a class="button button-primary" href="{{ route('games.edit', $game) }}">Editar jogo</a>
-            @else
-                <a class="button button-outline" href="{{ route('games.edit', $game) }}">Confirmar personagens</a>
-            @endif
+            <a class="button button-primary" href="{{ route('games.edit', $game) }}">Editar jogo</a>
         @endauth
     </section>
     @include('partials.flash')

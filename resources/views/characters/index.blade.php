@@ -97,16 +97,9 @@
                                     <a class="button button-outline button-small"
                                         href="{{ route('characters.show', $character) }}">Ver jogos <span>→</span></a>
                                     @auth
-                                        @if (auth()->user()->isAdministrator())
-                                            <a class="button button-primary button-small"
-                                                href="{{ route('characters.edit', $character) }}"
-                                                aria-label="Editar {{ $character->name }}" title="Editar personagem">Editar</a>
-                                        @else
-                                            <a class="button button-outline button-small"
-                                                href="{{ route('characters.edit', $character) }}"
-                                                aria-label="Confirmar {{ $character->name }}"
-                                                title="Confirmar dados do personagem">Confirmar</a>
-                                        @endif
+                                        <a class="button button-primary button-small"
+                                            href="{{ route('characters.edit', $character) }}"
+                                            aria-label="Editar {{ $character->name }}" title="Editar personagem">Editar</a>
                                         @if (auth()->user()->isAdministrator())
                                             <form method="POST" action="{{ route('characters.destroy', $character) }}"
                                                 onsubmit="return confirm('Remover este personagem?')">
