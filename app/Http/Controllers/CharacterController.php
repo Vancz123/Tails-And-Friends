@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ChecksAdminAccess;
 use App\Models\Character;
 use App\Models\Game;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,6 +14,8 @@ use RuntimeException;
 
 class CharacterController extends Controller
 {
+    use ChecksAdminAccess;
+
     public function index(Request $request)
     {
         $filters = $request->validate([
@@ -50,9 +53,13 @@ class CharacterController extends Controller
         return view('characters.index', compact('characters', 'search', 'sort', 'direction'));
     }
 
-public function create()
+    public function create()
     {
         $games = Game::orderBy('name')->get();
+
+        if (! $this->canManageContent()) {
+            return view('characters.check', ['character' => new Character, 'games' => $games]);
+        }
 
         return view('characters.form', ['character' => new Character, 'games' => $games]);
     }
@@ -82,8 +89,17 @@ public function store(Request $request)
 
     public function show(Character $character)
     {
-        $userId = auth()->id();
         $character->load('debutGame');
+
+        return view('characters.show', ['character' => $this->withVerificationState($character)]);
+    }
+
+    /**
+     * Carrega as contagens de confirmações e o estado dos checks do utilizador atual.
+     */
+    private function withVerificationState(Character $character): Character
+    {
+        $userId = auth()->id();
         $character->loadCount([
             'verifications as character_verifications_count' => fn(Builder $query) => $query
                 ->whereNotNull('character_verified_at'),
@@ -117,13 +133,20 @@ public function store(Request $request)
                 ])
         ]);
 
-        return view('characters.show', compact('character'));
+        return $character;
     }
 
     public function edit(Character $character)
     {
         $games = Game::orderBy('name')->get();
         $character->load('debutGame');
+
+        if (! $this->canManageContent()) {
+            return view('characters.check', [
+                'character' => $this->withVerificationState($character),
+                'games' => $games,
+            ]);
+        }
 
         return view('characters.form', compact('character', 'games'));
     }

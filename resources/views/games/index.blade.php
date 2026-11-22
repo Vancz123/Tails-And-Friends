@@ -72,7 +72,11 @@
                                 <div class="action-row">
                                     <a class="button button-outline button-small" href="{{ route('games.show', $game) }}">Ver jogo</a>
                                     @auth
-                                        <a class="button button-primary button-small" href="{{ route('games.edit', $game) }}">Editar</a>
+                                        @if (auth()->user()->isAdministrator())
+                                            <a class="button button-primary button-small" href="{{ route('games.edit', $game) }}" aria-label="Editar {{ $game->name }}">Editar</a>
+                                        @else
+                                            <a class="button button-outline button-small" href="{{ route('games.edit', $game) }}" aria-label="Confirmar {{ $game->name }}" title="Confirmar personagens do jogo">Confirmar</a>
+                                        @endif
                                         @if (auth()->user()->isAdministrator())
                                             <form method="POST" action="{{ route('games.destroy', $game) }}" onsubmit="return confirm('Remover este jogo?')">
                                                 @csrf

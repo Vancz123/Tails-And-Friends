@@ -86,6 +86,34 @@ class UserManagementController extends Controller
             $managedUser->forceFill(['role' => $data['role']])->save();
         });
 
-return redirect()->route('admin.users.index')->with('status', 'Permissão do utilizador atualizada.');
+        return redirect()->route('admin.users.index')->with('status', 'Permissão do utilizador atualizada.');
+    }
+
+    public function destroy(Request $request, User $user): RedirectResponse
+    {
+        if ($user->is($request->user())) {
+            throw ValidationException::withMessages([
+                'user' => 'Não podes apagar a tua própria conta aqui. Usa as definições da conta.',
+            ]);
+        }
+
+        DB::transaction(function () use ($user): void {
+            $managedUser = User::query()->lockForUpdate()->findOrFail($user->id);
+            $remainingAdministrators = User::query()
+                ->where('role', 'admin')
+                ->whereKeyNot($managedUser->id)
+                ->lockForUpdate()
+                ->count();
+
+            if ($managedUser->isAdministrator() && $remainingAdministrators === 0) {
+                throw ValidationException::withMessages([
+                    'user' => 'A aplicação precisa de pelo menos um administrador.',
+                ]);
+            }
+
+            $managedUser->delete();
+        });
+
+        return redirect()->route('admin.users.index')->with('status', 'Utilizador removido com sucesso.');
     }
 }

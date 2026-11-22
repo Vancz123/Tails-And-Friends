@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\ChecksAdminAccess;
 use App\Models\Character;
 use App\Models\Game;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,6 +15,8 @@ use RuntimeException;
 
 class GameController extends Controller
 {
+    use ChecksAdminAccess;
+
     public function index(Request $request)
     {
         $filters = $request->validate([
@@ -80,8 +83,12 @@ class GameController extends Controller
         return view('games.show', compact('game', 'debutCharacters', 'appearingCharacters'));
     }
 
-public function create()
+    public function create()
     {
+        if (! $this->canManageContent()) {
+            return view('games.check', ['game' => new Game]);
+        }
+
         $characters = Character::orderBy('name')->get();
 
         return view('games.form', ['game' => new Game, 'characters' => $characters]);
@@ -108,10 +115,38 @@ public function store(Request $request)
 
     public function edit(Game $game)
     {
+        if (! $this->canManageContent()) {
+            return view('games.check', ['game' => $this->withAppearanceState($game)]);
+        }
+
         $characters = Character::orderBy('name')->get();
         $game->load('characters');
 
         return view('games.form', compact('game', 'characters'));
+    }
+
+    /**
+     * Carrega as personagens do jogo com as confirmações de presença do utilizador atual.
+     */
+    private function withAppearanceState(Game $game): Game
+    {
+        $userId = auth()->id();
+
+        $game->load([
+            'characters' => fn ($query) => $query
+                ->orderBy('characters.name')
+                ->withCount([
+                    'gameVerifications as appearance_verifications_count' => fn (Builder $query) => $query
+                        ->where('game_id', $game->id),
+                ])
+                ->withExists([
+                    'gameVerifications as appearance_verified_by_user' => fn (Builder $query) => $query
+                        ->where('game_id', $game->id)
+                        ->where('user_id', $userId),
+                ]),
+        ]);
+
+        return $game;
     }
 
     public function update(Request $request, Game $game)

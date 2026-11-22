@@ -252,7 +252,10 @@ class CharacterAccessTest extends TestCase
         ]);
         $other->characters()->attach($character);
 
-        $this->actingAs(User::factory()->create())
+        $admin = User::factory()->create();
+        $admin->forceFill(['role' => 'admin'])->save();
+
+        $this->actingAs($admin)
             ->get(route('characters.edit', $character))
             ->assertOk()
             ->assertSee('debut_game_id')
@@ -359,42 +362,71 @@ class CharacterAccessTest extends TestCase
         $this->get(route('dashboard'))->assertOk()->assertSee('Olá, Sonic Fan');
     }
 
-    public function test_authenticated_users_can_edit_but_cannot_create_or_delete_content(): void
+    public function test_authenticated_users_open_the_forms_but_can_only_confirm_facts(): void
     {
         $user = User::factory()->create();
         $character = Character::create(['name' => 'Tails']);
         $game = Game::create(['name' => 'Sonic Adventure 2', 'release_date' => '2001-06-19']);
+        $character->games()->attach($game);
 
         $this->actingAs($user)
-            ->get(route('characters.edit', $character))
-            ->assertOk();
+            ->get(route('characters.create'))
+            ->assertOk()
+            ->assertSee('Apenas os administradores podem adicionar personagens')
+            ->assertDontSee('name="name"', false);
+
+        $this->get(route('characters.edit', $character))
+            ->assertOk()
+            ->assertSee('Modo confirmação')
+            ->assertSee('Confirmar este personagem')
+            ->assertSee(route('characters.verifications.update', $character), false)
+            ->assertDontSee('name="description"', false);
+
+        $this->get(route('games.create'))
+            ->assertOk()
+            ->assertSee('Apenas os administradores podem adicionar jogos');
+
+        $this->get(route('games.edit', $game))
+            ->assertOk()
+            ->assertSee('Personagens do jogo')
+            ->assertSee(route('characters.verifications.update', $character), false);
+
+        $this->get(route('characters.index'))
+            ->assertOk()
+            ->assertDontSee('Novo personagem');
 
         $this->get(route('games.index'))
             ->assertOk()
             ->assertDontSee('Novo jogo');
 
-        $this->get(route('games.edit', $game))->assertOk();
-
         $this->put(route('characters.update', $character), [
             'name' => 'Miles "Tails" Prower',
-            'image_url' => null,
             'description' => 'Sonic\'s friend',
-        ])
-            ->assertRedirect(route('characters.show', $character));
+        ])->assertForbidden();
 
         $this->put(route('games.update', $game), [
-            'name' => 'Sonic Adventure 2',
+            'name' => 'Outro nome',
             'release_date' => '2001-06-19',
-            'character_ids' => [$character->id],
-        ])->assertRedirect(route('games.index'));
+        ])->assertForbidden();
 
         $this->post(route('characters.store'), ['name' => 'Amy Rose'])->assertForbidden();
         $this->post(route('games.store'), ['name' => 'Sonic Heroes', 'release_date' => '2003-12-30'])->assertForbidden();
         $this->delete(route('characters.destroy', $character))->assertForbidden();
         $this->delete(route('games.destroy', $game))->assertForbidden();
 
-        $this->assertSame('Miles "Tails" Prower', $character->fresh()->name);
-        $this->assertTrue($game->fresh()->characters->contains($character));
+        $this->assertSame('Tails', $character->fresh()->name);
+
+        $this->put(route('characters.verifications.update', $character), [
+            'fact' => 'appearance',
+            'game_id' => $game->id,
+            'checked' => 1,
+        ])->assertRedirect(route('characters.show', $character));
+
+        $this->assertDatabaseHas('character_game_verifications', [
+            'user_id' => $user->id,
+            'character_id' => $character->id,
+            'game_id' => $game->id,
+        ]);
     }
 
     public function test_administrators_can_create_and_delete_content(): void

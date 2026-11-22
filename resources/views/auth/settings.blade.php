@@ -14,6 +14,7 @@
             <!-- Password Form -->
             <form method="POST" action="{{ route('user-password.update') }}" class="form-stack">
                 @csrf
+                @method('PUT')
                 <label for="current_password">Palavra-passe atual</label>
                 <input id="current_password" name="current_password" type="password" autocomplete="current-password" required>
 

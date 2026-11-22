@@ -9,6 +9,16 @@
             <h1>Alterar palavra-passe</h1>
             <p class="muted">Confirma a palavra-passe atual e define uma nova para a tua conta.</p>
             @include('partials.flash')
+            @if ($errors->updatePassword->any())
+                <div class="notice notice-error" role="alert">
+                    <strong>Não foi possível guardar.</strong>
+                    <ul>
+                        @foreach ($errors->updatePassword->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <form method="POST" action="{{ route('user-password.update') }}" class="form-stack">
                 @csrf
                 @method('PUT')

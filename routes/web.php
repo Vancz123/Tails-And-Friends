@@ -8,33 +8,40 @@ use App\Http\Controllers\SecuritySimulationController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/characters');
+Route::redirect('/', '/characters')->name('welcome');
 
+// Catálogo público.
 Route::get('/characters', [CharacterController::class, 'index'])->name('characters.index');
-Route::get('/characters/{character}', [CharacterController::class, 'show'])->name('characters.show');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
-Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
+    /*
+     | Formulários de criação e edição: qualquer utilizador autenticado pode abri-los.
+     | Quem não é administrador vê a ficha em modo de confirmação; só o administrador
+     | pode submeter alterações. As rotas estáticas (/create) ficam antes de /{modelo}.
+     */
+    Route::get('/characters/create', [CharacterController::class, 'create'])->name('characters.create');
+    Route::get('/characters/{character}/edit', [CharacterController::class, 'edit'])->name('characters.edit');
+    Route::get('/games/create', [GameController::class, 'create'])->name('games.create');
+    Route::get('/games/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
 
     Route::put('/characters/{character}/verifications', [CharacterVerificationController::class, 'update'])
         ->name('characters.verifications.update');
 
     Route::view('/settings', 'auth.settings')->name('settings.index');
+    Route::view('/settings/password', 'auth.update-password')->name('user-password.edit');
     Route::delete('/settings/account', [UserManagementController::class, 'destroyAccount'])
         ->name('account.destroy');
 
     Route::middleware('admin')->group(function () {
-        Route::get('/characters/create', [CharacterController::class, 'create'])->name('characters.create');
+        // Mutação do conteúdo: exclusivo dos administradores.
         Route::post('/characters', [CharacterController::class, 'store'])->name('characters.store');
-        Route::get('/characters/{character}/edit', [CharacterController::class, 'edit'])->name('characters.edit');
         Route::put('/characters/{character}', [CharacterController::class, 'update'])->name('characters.update');
         Route::delete('/characters/{character}', [CharacterController::class, 'destroy'])->name('characters.destroy');
 
-        Route::get('/games/create', [GameController::class, 'create'])->name('games.create');
         Route::post('/games', [GameController::class, 'store'])->name('games.store');
-        Route::get('/games/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
         Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
         Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
 
@@ -50,5 +57,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/users', [UserManagementController::class, 'index'])->name('admin.users.index');
         Route::put('/admin/users/{user}/role', [UserManagementController::class, 'updateRole'])
             ->name('admin.users.update-role');
+        Route::delete('/admin/users/{user}', [UserManagementController::class, 'destroy'])
+            ->name('admin.users.destroy');
     });
 });
+
+// Detalhe público, registado depois das rotas estáticas para não capturar /create.
+Route::get('/characters/{character}', [CharacterController::class, 'show'])->name('characters.show');
+Route::get('/games/{game}', [GameController::class, 'show'])->name('games.show');

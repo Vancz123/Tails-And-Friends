@@ -7,8 +7,9 @@
         <div>
             <span class="eyebrow">Painel de administração</span>
             <h1>Utilizadores</h1>
-            <p>Consulta as contas registadas e gere quem tem permissões de administrador.</p>
+            <p>Consulta as contas registadas, gere permissões e remove contas que já não pertencem à equipa.</p>
         </div>
+        <img class="hero-art" src="{{ asset('images/tails-users.png') }}" alt="Tails a organizar a equipa de amigos">
     </section>
     @include('partials.flash')
 
@@ -51,16 +52,25 @@
                                 @if ($user->id === auth()->id())
                                     <span class="muted">A tua conta</span>
                                 @else
-                                    <form class="role-form" method="POST" action="{{ route('admin.users.update-role', $user) }}">
-                                        @csrf
-                                        @method('PUT')
-                                        <label class="sr-only" for="role-{{ $user->id }}">Permissão de {{ $user->name }}</label>
-                                        <select id="role-{{ $user->id }}" name="role">
-                                            <option value="user" @selected($user->role === 'user')>Utilizador</option>
-                                            <option value="admin" @selected($user->role === 'admin')>Administrador</option>
-                                        </select>
-                                        <button class="button button-outline button-small" type="submit">Guardar</button>
-                                    </form>
+                                    <div class="user-actions">
+                                        <form class="role-form" method="POST" action="{{ route('admin.users.update-role', $user) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <label class="sr-only" for="role-{{ $user->id }}">Permissão de {{ $user->name }}</label>
+                                            <select id="role-{{ $user->id }}" name="role">
+                                                <option value="user" @selected($user->role === 'user')>Utilizador</option>
+                                                <option value="admin" @selected($user->role === 'admin')>Administrador</option>
+                                            </select>
+                                            <button class="button button-outline button-small" type="submit">Guardar</button>
+                                        </form>
+                                        <form class="user-delete-form" method="POST" action="{{ route('admin.users.destroy', $user) }}"
+                                            onsubmit="return confirm('Apagar a conta de {{ $user->name }}? Esta ação não pode ser desfeita.')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="button button-danger button-small" type="submit"
+                                                aria-label="Apagar a conta de {{ $user->name }}">Apagar</button>
+                                        </form>
+                                    </div>
                                 @endif
                             </td>
                         </tr>
