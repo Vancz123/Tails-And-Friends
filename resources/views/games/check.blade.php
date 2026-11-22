@@ -12,16 +12,18 @@
             <h1>{{ $editing ? $game->name : 'Adicionar jogo' }}</h1>
             <p>
                 @if ($editing)
-                    Consulta os dados deste jogo e confirma as personagens que nele aparecem. Só os administradores podem alterar a coleção.
+                    Consulta os dados deste jogo e confirma as personagens que nele aparecem. Só os administradores podem
+                    alterar a coleção. Os Logs das nossas aventuras são demasiado importantes!
                 @else
-                    Apenas os administradores podem adicionar jogos. Abre um jogo existente para confirmares as suas personagens.
+                    Apenas os administradores podem adicionar jogos. Abre um jogo existente para confirmares as suas
+                    personagens.
                 @endif
             </p>
         </div>
         <img class="hero-art" src="{{ asset('images/tails-games.png') }}" alt="Tails numa cena de aventura">
     </section>
     @include('partials.flash')
-@if ($editing)
+    @if ($editing)
         <section class="content-panel debut-panel">
             <div class="panel-heading">
                 <div>
@@ -53,7 +55,8 @@
                     <h2>Personagens do jogo</h2>
                     <p>Confirma a presença de cada personagem neste jogo.</p>
                 </div>
-                <span class="panel-badge">{{ $game->characters->count() }} {{ $game->characters->count() === 1 ? 'personagem' : 'personagens' }}</span>
+                <span class="panel-badge">{{ $game->characters->count() }}
+                    {{ $game->characters->count() === 1 ? 'personagem' : 'personagens' }}</span>
             </div>
             @forelse ($game->characters as $character)
                 <div class="game-name-row">

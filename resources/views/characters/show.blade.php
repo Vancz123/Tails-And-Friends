@@ -16,7 +16,8 @@
             <span class="eyebrow">Personagem</span>
             <h1>{{ $character->name }}</h1>
             <p>{{ $character->description ?: 'Um amigo do Sonic.' }}</p>
-            <span class="count-pill">{{ $character->games->count() }} {{ $character->games->count() === 1 ? 'jogo' : 'jogos' }} na coleção</span>
+            <span class="count-pill">{{ $character->games->count() }}
+                {{ $character->games->count() === 1 ? 'jogo' : 'jogos' }} na coleção</span>
             @include('partials.verification-check', [
                 'fact' => 'character',
                 'label' => 'este personagem',
@@ -36,14 +37,18 @@
 
     <section class="content-panel debut-panel">
         <div class="panel-heading">
-            <div><h2>Jogo de estreia</h2><p>O jogo em que esta personagem apareceu pela primeira vez na franquia.</p></div>
+            <div>
+                <h2>Jogo de estreia</h2>
+                <p>O jogo em que esta personagem apareceu pela primeira vez na franquia.</p>
+            </div>
             <span class="panel-badge">Primeira aparição</span>
         </div>
         @if ($character->debutGame)
             <div class="debut-feature">
                 <div class="debut-art">
                     @if ($character->debutGame->image)
-                        <img src="{{ $character->debutGame->image }}" alt="Imagem de {{ $character->debutGame->name }}" loading="lazy">
+                        <img src="{{ $character->debutGame->image }}" alt="Imagem de {{ $character->debutGame->name }}"
+                            loading="lazy">
                     @else
                         <span>Imagem não disponível</span>
                     @endif
@@ -61,13 +66,17 @@
                 </div>
             </div>
         @else
-            <p class="empty-state">O jogo de estreia ainda não foi definido. Escolhe-o ao editar a personagem.</p>
+            <p class="empty-state">O jogo de estreia ainda não foi definido. Escolhe-o ao editar a personagem. Mas as vezes
+                os nossos amigos podem nao ser exatamente os mesmos...</p>
         @endif
     </section>
 
     <section class="content-panel">
         <div class="panel-heading">
-            <div><h2>Outros jogos</h2><p>Outros jogos da coleção em que esta personagem aparece.</p></div>
+            <div>
+                <h2>Outros jogos</h2>
+                <p>Outros jogos da coleção em que esta personagem aparece. Os nossos amigos estão sempre la para nos!</p>
+            </div>
         </div>
         @forelse ($character->games as $game)
             <div class="game-name-row">
@@ -81,7 +90,7 @@
                 ])
             </div>
         @empty
-            <p class="empty-state">Ainda não há outros jogos associados a esta personagem.</p>
+            <p class="empty-state">Ainda não há outros jogos associados a esta personagem. Infelizmente, os nossos amigos podem ter desaparecido... </p>
         @endforelse
     </section>
 @endsection

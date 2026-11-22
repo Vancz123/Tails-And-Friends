@@ -22,7 +22,8 @@
                 <input id="password" name="password" type="password" autocomplete="new-password" required>
 
                 <label for="password_confirmation">Confirmar nova palavra-passe</label>
-                <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" required>
+                <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password"
+                    required>
 
                 <button class="button button-primary button-wide" type="submit">Guardar nova palavra-passe</button>
             </form>
@@ -30,7 +31,8 @@
             <!-- Delete Account Section -->
             <div class="settings-divider" aria-hidden="true"></div>
 
-            <form method="POST" action="{{ route('account.destroy') }}" class="form-stack delete-account-section" onsubmit="return confirm('Tem a certeza que quer apagar a sua conta permanentemente? Esta ação não pode ser desfeita.');">
+            <form method="POST" action="{{ route('account.destroy') }}" class="form-stack delete-account-section"
+                onsubmit="return confirm('Tem a certeza que quer apagar a sua conta permanentemente? Esta ação não pode ser desfeita.');">
                 @csrf
                 @method('DELETE')
 
@@ -38,7 +40,9 @@
                     <span class="warning-icon" aria-hidden="true">⚠</span>
                     <div>
                         <h3>Esta ação é irreversível</h3>
-                        <p>Apagar a tua conta remove permanentemente todos os teus dados, incluindo verificações de personagens e jogos. Não é possível recuperar a conta depois de apagada.</p>
+                        <p>Apagar a tua conta remove permanentemente todos os teus dados, incluindo verificações de
+                            personagens e jogos. Não é possível recuperar a conta depois de apagada. Vamos sentir a tua
+                            falta!</p>
                     </div>
                 </div>
 

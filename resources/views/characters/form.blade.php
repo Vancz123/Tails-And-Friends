@@ -10,7 +10,7 @@
         <div class="form-intro">
             <span class="eyebrow">{{ $editing ? 'Atualizar coleção' : 'Expandir coleção' }}</span>
             <h1>{{ $editing ? 'Editar personagem' : 'Novo personagem' }}</h1>
-            <p>Adiciona os detalhes e a imagem que identificam este amigo do Sonic.</p>
+            <p>Adiciona os detalhes e a imagem que identificam este amigo do Sonic. Wow! um novo amigo!</p>
         </div>
         @include('partials.flash')
         <form class="content-panel form-card form-stack" method="POST" enctype="multipart/form-data"
@@ -41,7 +41,8 @@
                 @endif
                 <input id="image" name="image" type="file"
                     accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-image-preview-input>
-                <small>JPG, PNG ou WEBP; máximo 2 MB. Deixa em branco para manter a imagem atual.</small>
+                <small>JPG, PNG ou WEBP; máximo 2 MB. Deixa em branco para manter a imagem atual. Mas seria um pouco mau nao
+                    saber-mos como o nosso amigo se parece...</small>
             </div>
             <div class="field-group">
                 <label for="debut_game_id">Jogo de estreia na franquia</label>

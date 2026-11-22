@@ -47,7 +47,8 @@
                     @endif
                     <input id="image" name="image" type="file"
                         accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-image-preview-input>
-                    <small>JPG, PNG ou WEBP; máximo 2 MB. Deixa em branco para manter a imagem atual.</small>
+                    <small>JPG, PNG ou WEBP; máximo 2 MB. Deixa em branco para manter a imagem atual. mas preferia que os
+                        meus amigos tivessem imagem haha..</small>
                 </div>
             </div>
             <div class="field-group">

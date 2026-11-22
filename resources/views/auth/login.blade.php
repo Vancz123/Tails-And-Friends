@@ -7,7 +7,7 @@
         <div class="auth-card">
             <span class="eyebrow">Bem-vindo de volta</span>
             <h1>Entrar na conta</h1>
-            <p class="muted">Acede ao dashboard e ajuda a manter a coleção atualizada.</p>
+            <p class="muted">Acede ao dashboard e Consulta a nossa equipa!. se fores utilizador podes confirmar onde os meus amigos aparecem!</p>
             @include('partials.flash')
             <form method="POST" action="{{ route('login') }}" class="form-stack">
                 @csrf
@@ -21,7 +21,7 @@
                 </label>
                 <button class="button button-primary button-wide" type="submit">Entrar</button>
             </form>
-            <p class="auth-switch">Ainda não tens conta? <a href="{{ route('register') }}">Regista-te</a></p>
+            <p class="auth-switch">Ainda não tens conta? <a href="{{ route('register') }}">Regista-te com a nossa equipa!</a></p>
         </div>
     </section>
 @endsection
