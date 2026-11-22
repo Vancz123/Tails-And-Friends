@@ -52,6 +52,7 @@
                                 @if ($user->id === auth()->id())
                                     <span class="muted">A tua conta</span>
                                 @else
+<<<<<<< HEAD
                                     <div class="user-actions">
                                         <form class="role-form" method="POST" action="{{ route('admin.users.update-role', $user) }}">
                                             @csrf
@@ -71,6 +72,23 @@
                                                 aria-label="Apagar a conta de {{ $user->name }}">Apagar</button>
                                         </form>
                                     </div>
+=======
+                                    <form class="role-form" method="POST" action="{{ route('admin.users.update-role', $user) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <label class="sr-only" for="role-{{ $user->id }}">Permissão de {{ $user->name }}</label>
+                                        <select id="role-{{ $user->id }}" name="role">
+                                            <option value="user" @selected($user->role === 'user')>Utilizador</option>
+                                            <option value="admin" @selected($user->role === 'admin')>Administrador</option>
+                                        </select>
+                                        <button class="button button-outline button-small" type="submit">Guardar</button>
+                                    </form>
+                                    <form class="role-form" method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Tem a certeza que queres apagar este utilizador? Esta ação não pode ser desfeita.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="button button-danger button-small" type="submit">Apagar</button>
+                                    </form>
+>>>>>>> 51ef348453b200e99430a06005b28634517d253b
                                 @endif
                             </td>
                         </tr>

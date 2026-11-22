@@ -85,10 +85,14 @@ class GameController extends Controller
 
     public function create()
     {
+<<<<<<< HEAD
         if (! $this->canManageContent()) {
             return view('games.check', ['game' => new Game]);
         }
 
+=======
+        $this->requireAdministrator();
+>>>>>>> 51ef348453b200e99430a06005b28634517d253b
         $characters = Character::orderBy('name')->get();
 
         return view('games.form', ['game' => new Game, 'characters' => $characters]);
@@ -96,6 +100,7 @@ class GameController extends Controller
 
 public function store(Request $request)
     {
+        $this->requireAdministrator();
         $data = $this->validatedData($request);
         $characterIds = $data['character_ids'] ?? [];
         $image = $data['image'] ?? null;
@@ -175,6 +180,8 @@ public function store(Request $request)
 
 public function destroy(Game $game)
     {
+        $this->requireAdministrator();
+
         $imagePath = $game->image_path;
         $game->delete();
 
@@ -219,5 +226,10 @@ public function destroy(Game $game)
         if ($disk->exists($path) && !$disk->delete($path)) {
             throw new RuntimeException('Não foi possível remover a imagem antiga do jogo.');
         }
+    }
+
+    private function requireAdministrator(): void
+    {
+        abort_unless(auth()->user()?->isAdministrator(), 403);
     }
 }

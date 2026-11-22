@@ -16,26 +16,10 @@ use Illuminate\View\View;
 
 class UserManagementController extends Controller
 {
-    public function destroyAccount(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'password' => ['required', 'current_password:web'],
-        ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('welcome')->with('status', 'A tua conta foi eliminada permanentemente.');
-    }
-
     public function index(Request $request): View
     {
+        $this->requireAdministrator();
+
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
         ]);
@@ -56,6 +40,7 @@ class UserManagementController extends Controller
 
     public function updateRole(Request $request, User $user): RedirectResponse
     {
+        $this->requireAdministrator();
 
         $data = $request->validate([
             'role' => ['required', 'string', Rule::in(['user', 'admin'])],
@@ -91,6 +76,7 @@ class UserManagementController extends Controller
 
     public function destroy(Request $request, User $user): RedirectResponse
     {
+<<<<<<< HEAD
         if ($user->is($request->user())) {
             throw ValidationException::withMessages([
                 'user' => 'Não podes apagar a tua própria conta aqui. Usa as definições da conta.',
@@ -115,5 +101,41 @@ class UserManagementController extends Controller
         });
 
         return redirect()->route('admin.users.index')->with('status', 'Utilizador removido com sucesso.');
+=======
+        $this->requireAdministrator();
+
+        if ($user->is(auth()->user())) {
+            return redirect()->route('admin.users.index')
+                ->with('status', 'Não podes apagar a tua própria conta por aqui. Usa as definições da conta.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users.index')
+            ->with('status', 'Utilizador removido com sucesso.');
+    }
+
+    public function destroyAccount(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'password' => ['required', 'current_password:web'],
+        ]);
+
+        $user = $request->user();
+
+        Auth::logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('welcome')->with('status', 'A tua conta foi eliminada permanentemente.');
+    }
+
+    private function requireAdministrator(): void
+    {
+        abort_unless(auth()->user()?->isAdministrator(), 403);
+>>>>>>> 51ef348453b200e99430a06005b28634517d253b
     }
 }
