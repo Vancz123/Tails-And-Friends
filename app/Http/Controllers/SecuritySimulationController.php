@@ -21,6 +21,8 @@ class SecuritySimulationController extends Controller
 
     public function index(Request $request)
     {
+        $this->requireAdministrator();
+
         $incidents = SecurityIncident::query()->latest()->limit(30)->get();
 
         return view('security.index', compact('incidents'));
@@ -28,6 +30,8 @@ class SecuritySimulationController extends Controller
 
     public function simulate(Request $request)
     {
+        $this->requireAdministrator();
+
         $limiterKey = 'eggman-simulation:' . Str::uuid();
         $incidents = collect(self::SIMULATED_ATTEMPTS)->map(function (array $attempt, int $index) use ($request, $limiterKey) {
             $blocked = RateLimiter::tooManyAttempts($limiterKey, 3);
@@ -65,6 +69,7 @@ class SecuritySimulationController extends Controller
 
     public function destroy(Request $request, SecurityIncident $incident): RedirectResponse
     {
+        $this->requireAdministrator();
         $incident->delete();
 
         return redirect()->route('security.index')
@@ -73,9 +78,15 @@ class SecuritySimulationController extends Controller
 
     public function destroyAll(Request $request): RedirectResponse
     {
+        $this->requireAdministrator();
         $deletedCount = SecurityIncident::query()->delete();
 
         return redirect()->route('security.index')
             ->with('status', 'Número de registos de segurança removidos: ' . $deletedCount . '.');
+    }
+
+    private function requireAdministrator(): void
+    {
+        abort_unless(auth()->user()?->isAdministrator(), 403);
     }
 }

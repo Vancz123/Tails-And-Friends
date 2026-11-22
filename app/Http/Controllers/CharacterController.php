@@ -52,6 +52,7 @@ class CharacterController extends Controller
 
 public function create()
     {
+        $this->requireAdministrator();
         $games = Game::orderBy('name')->get();
 
         return view('characters.form', ['character' => new Character, 'games' => $games]);
@@ -59,6 +60,8 @@ public function create()
 
 public function store(Request $request)
     {
+        $this->requireAdministrator();
+
         $data = $this->validatedData($request);
         $image = $data['image'] ?? null;
         unset($data['image']);
@@ -162,6 +165,8 @@ public function store(Request $request)
 
 public function destroy(Character $character)
     {
+        $this->requireAdministrator();
+
         $imagePath = $character->image_path;
         $character->delete();
 
@@ -204,5 +209,10 @@ public function destroy(Character $character)
         if ($disk->exists($path) && !$disk->delete($path)) {
             throw new RuntimeException('Não foi possível remover a imagem antiga do personagem.');
         }
+    }
+
+    private function requireAdministrator(): void
+    {
+        abort_unless(auth()->user()?->isAdministrator(), 403);
     }
 }

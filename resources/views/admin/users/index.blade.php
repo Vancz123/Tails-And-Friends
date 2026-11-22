@@ -61,6 +61,11 @@
                                         </select>
                                         <button class="button button-outline button-small" type="submit">Guardar</button>
                                     </form>
+                                    <form class="role-form" method="POST" action="{{ route('admin.users.destroy', $user) }}" onsubmit="return confirm('Tem a certeza que queres apagar este utilizador? Esta ação não pode ser desfeita.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="button button-danger button-small" type="submit">Apagar</button>
+                                    </form>
                                 @endif
                             </td>
                         </tr>
